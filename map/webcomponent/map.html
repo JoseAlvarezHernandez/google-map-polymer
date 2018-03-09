@@ -1,0 +1,109 @@
+<link rel="import" href="../../../polymer/polymer-element.html">
+<script src="google-map.js"></script>
+<dom-module id="google-map">
+    <template>
+        <style>
+            :host {
+                display: block;
+            }
+        </style>
+        <h2>Hello [[name]]!</h2>
+        <div id="map" style="height:300px; width:300px;"></div>
+    </template>
+    <script>
+        /**
+         * `googleMap`
+         * @customElement
+         * @polymer
+         * @demo demo/index.html
+        */
+        class Dumb_element extends Polymer.Element {
+            static get is() { return 'google-map'; }
+            static get properties() {
+                return {
+                    name: {
+                        type: String,
+                        value: 'google-map'
+                    },
+                    lat: {
+                        type: Number,
+                        value: 19.4284700
+                    },
+                    lng: {
+                        type: Number,
+                        value: -99.1276600
+                    },
+                    zoom: {
+                        type: Number,
+                        value: 7
+                    },
+                    map: {
+                        type: Object,
+                        notify: true,
+                        value: null
+                    },
+                    markers: {
+                        type: Array,
+                        notify: true,
+                        value: [],
+                        observer: '_activeChanged'
+                    },
+                    mapsMarkers: {
+                        type: Array,
+                        value: []
+                    }
+                };
+            }
+            ready() {
+                super.ready();
+                console.log('ready');
+                
+                this.initMap();
+            }
+            attached(){
+                super.attached();
+                console.log('attached');
+            }
+            connectedCallback() {
+                super.connectedCallback();
+                console.log('connected callback');
+
+            }
+            _activeChanged(newVal, oldVal) {
+                if (oldVal === undefined)
+                    return
+
+                this._reloadMarkers();
+            }
+            _mapOption() {
+                let options = {
+                    zoom: this.zoom,
+                    center: {
+                        lat: this.lat,
+                        lng: this.lng
+                    }
+                };
+                return options;
+            }
+            _mapMarkers() {
+                this.markers.forEach(marker => {
+                    this.mapsMarkers.push( new google.maps.Marker({ position: marker, map: this.map }) );
+                });
+            }
+
+            _reloadMarkers(){
+                this.mapsMarkers.forEach( (marker)=>{
+                    marker.setMap(null);
+                });
+                this._mapMarkers();
+            }
+
+            initMap() {
+                this.map = new google.maps.Map(this.$.map, this._mapOption());
+                this._mapMarkers();
+            }
+
+        }
+        window.customElements.define(Dumb_element.is, Dumb_element);
+    </script>
+</dom-module>

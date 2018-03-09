@@ -1,3 +1,3 @@
 # google-map-polymer
 
-#Polymer Web Component for using google maps
+# Polymer Web Component for using google maps

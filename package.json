@@ -1,6 +1,6 @@
 {
   "name": "google-map-polymer",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "My google map using web components",
   "publishConfig": {
     "registry": "http://localhost:8081/artifactory/api/npm/my-maps/"

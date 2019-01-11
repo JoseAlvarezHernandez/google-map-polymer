@@ -24,11 +24,10 @@
     <script>
         /**
          * `googleMap`
-         * @customElement
+         * @googleMap
          * @polymer
-         * @demo demo/index.html
         */
-        class Dumb_element extends Polymer.Element {
+        class Google_map extends Polymer.Element {
             static get is() { return 'google-map'; }
             static get properties() {
                 return {
@@ -152,6 +151,6 @@
             }
 
         }
-        window.customElements.define(Dumb_element.is, Dumb_element);
+        window.customElements.define(Google_map.is, Google_map);
     </script>
 </dom-module>

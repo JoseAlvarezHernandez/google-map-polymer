@@ -1,6 +1,6 @@
 {
-  "name": "polymer_cli-element",
-  "main": "polymer_cli-element.html",
+  "name": "google-map",
+  "main": "map/webcomponent/map.html",
   "dependencies": {
     "polymer": "Polymer/polymer#^2.0.0"
   },

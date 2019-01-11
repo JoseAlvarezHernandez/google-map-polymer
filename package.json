@@ -1,0 +1,24 @@
+{
+  "name": "google-map-polymer",
+  "version": "1.0.1",
+  "description": "My google map using web components",
+  "publishConfig": {
+    "registry": "http://localhost:8081/artifactory/api/npm/my-maps/"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JoseAlvarezHernandez/google-map-polymer.git"
+  },
+  "author": "Jose de Jesus Alvarez Hernandez",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JoseAlvarezHernandez/google-map-polymer/issues"
+  },
+  "homepage": "https://github.com/JoseAlvarezHernandez/google-map-polymer#readme"
+}

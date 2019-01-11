@@ -9,7 +9,7 @@
             }
         </style>
         <h2>Hello {{name}}!</h2>
-        <div id="map" style="height:300px; width:300px;"></div>
+        <div id="map" style="height:[[height]]; width:[[width]];"></div>
         <div id="coords">
             <label for="name">Name</label>
             <input type="text" name="name" value="{{name::keyup}}">
@@ -37,6 +37,14 @@
                         value: 'google-map',
                         notify: true,
                         reflectToAttribute: true
+                    },
+                    height:{
+                        type: String,
+                        value: '400px',
+                    },
+                    width:{
+                        type:String,
+                        value: '100%'
                     },
                     lat: {
                         type: Number,

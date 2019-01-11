@@ -1,5 +1,6 @@
 <link rel="import" href="../../../polymer/polymer-element.html">
-<script src="google-map.js"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAXZGsFjMGp0Xlf5vDnNtk35gHdWHA1jIo">
+</script>
 <dom-module id="google-map">
     <template>
         <style>
@@ -56,18 +57,13 @@
             }
             ready() {
                 super.ready();
-                console.log('ready');
-                
                 this.initMap();
             }
-            attached(){
+            attached() {
                 super.attached();
-                console.log('attached');
             }
             connectedCallback() {
                 super.connectedCallback();
-                console.log('connected callback');
-
             }
             _activeChanged(newVal, oldVal) {
                 if (oldVal === undefined)
@@ -87,20 +83,26 @@
             }
             _mapMarkers() {
                 this.markers.forEach(marker => {
-                    this.mapsMarkers.push( new google.maps.Marker({ position: marker, map: this.map }) );
+                    this.mapsMarkers.push(new google.maps.Marker({ position: marker, map: this.map }));
                 });
             }
 
-            _reloadMarkers(){
-                this.mapsMarkers.forEach( (marker)=>{
+            _reloadMarkers() {
+                this.mapsMarkers.forEach((marker) => {
                     marker.setMap(null);
                 });
                 this._mapMarkers();
             }
 
             initMap() {
-                this.map = new google.maps.Map(this.$.map, this._mapOption());
-                this._mapMarkers();
+                const loadedMap = setInterval(() => {
+                    if (google) {
+                        clearInterval(loadedMap);
+                        this.map = new google.maps.Map(this.$.map, this._mapOption());
+                        this._mapMarkers();
+                    }
+                }, 2000);
+
             }
 
         }

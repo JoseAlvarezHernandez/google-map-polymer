@@ -8,8 +8,18 @@
                 display: block;
             }
         </style>
-        <h2>Hello [[name]]!</h2>
+        <h2>Hello {{name}}!</h2>
         <div id="map" style="height:300px; width:300px;"></div>
+        <div id="coords">
+            <label for="name">Name</label>
+            <input type="text" name="name" value="{{name::keyup}}">
+            <label for="lat">Lat</label>
+            <input type="number" name="lat" value="{{lat::change}}">
+            <label for="lng">Lng</label>
+            <input type="number" name="lng" value="{{lng::change}}">
+            <label for="lng">Zoom</label>
+            <input type="number" name="zoom" value="{{zoom::change}}">
+        </div>
     </template>
     <script>
         /**
@@ -24,19 +34,30 @@
                 return {
                     name: {
                         type: String,
-                        value: 'google-map'
+                        value: 'google-map',
+                        notify: true,
+                        reflectToAttribute: true
                     },
                     lat: {
                         type: Number,
-                        value: 19.4284700
+                        value: 19.4284700,
+                        notify: true,
+                        reflectToAttribute: true,
+                        observer: '_latChanged'
                     },
                     lng: {
                         type: Number,
-                        value: -99.1276600
+                        value: -99.1276600,
+                        notify: true,
+                        reflectToAttribute: true,
+                        observer: '_lngChanged'
                     },
                     zoom: {
                         type: Number,
-                        value: 7
+                        value: 7,
+                        notify: true,
+                        reflectToAttribute: true,
+                        observer: '_zoomChanged'
                     },
                     map: {
                         type: Object,
@@ -71,6 +92,24 @@
 
                 this._reloadMarkers();
             }
+            _latChanged(lat) {
+                if (lat === undefined || this.map === null)
+                    return;
+
+                this.map.setCenter(new google.maps.LatLng(lat, this.lng));
+            }
+            _lngChanged(lng) {
+                if (lng === undefined || this.map === null)
+                    return;
+
+                this.map.setCenter(new google.maps.LatLng(this.lat, lng));
+            }
+            _zoomChanged(zoom) {
+                if (zoom === undefined || this.map === null)
+                    return;
+
+                this.map.setZoom(Number(zoom));
+            }
             _mapOption() {
                 let options = {
                     zoom: this.zoom,
@@ -93,7 +132,6 @@
                 });
                 this._mapMarkers();
             }
-
             initMap() {
                 const loadedMap = setInterval(() => {
                     if (google) {

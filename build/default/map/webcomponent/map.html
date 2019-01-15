@@ -1,0 +1,213 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../bower_components/polymer/lib/elements/dom-repeat.html">
+<dom-module id="google-map">
+  <template>
+    <script async="" defer="" src="https://maps.googleapis.com/maps/api/js?key=[[google-key]]"></script>
+    <style>
+      :host {
+                display: block;
+            }
+            .markers.title h2{
+              float: left;
+            }
+            .markers.title button{
+              float: right;
+            }
+        </style>
+    <h2>{{greeting}}</h2>
+    <div id="map" style="height:[[height]]; width:[[width]];"></div>
+    <hr />
+    <div id="coords">
+      <label for="name">Greeting</label>
+      <input type="text" name="Greeting" value="{{greeting::keyup}}">
+      <label for="lat">Lat</label>
+      <input type="number" name="lat" value="{{lat::change}}">
+      <label for="lng">Lng</label>
+      <input type="number" name="lng" value="{{lng::change}}">
+      <label for="lng">Zoom</label>
+      <input type="number" name="zoom" value="{{zoom::change}}">
+    </div>
+    <hr />
+    <div class="markers">
+      <div class="title">
+        <h2>Markers</h2>
+        <button on-click="addMarker">+</button>
+      </div>
+      <template is="dom-repeat" id="menuItemList" items="{{markers}}" as="marker">
+        <div id="marker-[[index]]" class="marker">
+          <label for="markerLat">lat:</label> <input type="number" value={{marker.lat::change}} name="markerLat" />
+          <label for="markerLng">lng:</label> <input type="number" value="{{marker.lng::change}}" name="markerLng" />
+          <button on-click="removeMarker" value=[[index]]>-</button>
+        </div>
+      </template>
+    </div>
+  </template>
+  <script>
+    /**
+  * `googleMap`
+  * @googleMap
+  * @polymer
+  */
+    class Google_map extends Polymer.Element {
+      static get is() {
+        return 'google-map';
+      }
+
+      static get properties() {
+        return {
+          'google-key': {
+            type: String,
+          },
+          greeting: {
+            type: String,
+            value: 'google-map',
+            notify: true,
+            reflectToAttribute: true
+          },
+          height: {
+            type: String,
+            value: '400px'
+          },
+          width: {
+            type: String,
+            value: '100%'
+          },
+          lat: {
+            type: Number,
+            value: 19.4284700,
+            notify: true,
+            reflectToAttribute: true,
+            observer: '_latChanged'
+          },
+          lng: {
+            type: Number,
+            value: -99.1276600,
+            notify: true,
+            reflectToAttribute: true,
+            observer: '_lngChanged'
+          },
+          zoom: {
+            type: Number,
+            value: 7,
+            notify: true,
+            reflectToAttribute: true,
+            observer: '_zoomChanged'
+          },
+          map: {
+            type: Object,
+            notify: true,
+            value: null
+          },
+          markers: {
+            type: Array,
+            notify: true,
+            value: [],
+            observer: '_activeChanged',
+            reflectToAttribute: true
+          },
+          mapsMarkers: {
+            type: Array,
+            value: []
+          }
+        };
+      }
+
+      static get observers() {
+        return ['_activerChanged(markers.*)']
+      }
+      ready() {
+        super.ready();
+        this.initMap();
+      }
+
+      attached() {
+        super.attached();
+      }
+
+      connectedCallback() {
+        super.connectedCallback();
+      }
+
+      removeMarker(e) {
+        this.markers = this.markers.filter(value => value != e.model.__data.marker);
+      }
+
+      addMarker(e) {
+        this.markers = [{ lat: null, lng: null }, ...this.markers]
+      }
+
+      _activerChanged(newVal) {
+        if (typeof google !== 'undefined')
+          this._reloadMarkers();
+      }
+      /**/
+      _activeChanged(newVal, oldVal) {
+        if (oldVal === undefined) return;
+
+        this._reloadMarkers();
+      }
+      /**/
+      _latChanged(lat) {
+        if (lat === undefined || this.map === null) return;
+        this.map.setCenter(new google.maps.LatLng(lat, this.lng));
+      }
+
+      _lngChanged(lng) {
+        if (lng === undefined || this.map === null) return;
+        this.map.setCenter(new google.maps.LatLng(this.lat, lng));
+      }
+
+      _zoomChanged(zoom) {
+        if (zoom === undefined || this.map === null) return;
+        this.map.setZoom(Number(zoom));
+      }
+
+      _mapOption() {
+        let options = {
+          zoom: this.zoom,
+          center: {
+            lat: this.lat,
+            lng: this.lng
+          }
+        };
+        return options;
+      }
+
+      _mapMarkers() {
+        if (this.markers && this.markers.length) {
+          this.markers.forEach(marker => {
+            marker.lat = Number(marker.lat);
+            marker.lng = Number(marker.lng);
+            if (marker.lat && marker.lng) {
+              this.mapsMarkers.push(new google.maps.Marker({
+                position: marker,
+                map: this.map
+              }));
+            }
+          });
+        }
+      }
+
+      _reloadMarkers() {
+        this.mapsMarkers.forEach(marker => {
+          marker.setMap(null);
+        });
+
+        this._mapMarkers();
+      }
+
+      initMap() {
+        const loadedMap = setInterval(() => {
+          if (google) {
+            clearInterval(loadedMap);
+            this.map = new google.maps.Map(this.$.map, this._mapOption());
+
+            this._mapMarkers();
+          }
+        }, 2000);
+      }
+
+    }
+
+    window.customElements.define(Google_map.is, Google_map);</script>
+</dom-module>

@@ -3,5 +3,7 @@
     "rules": [
       "polymer-2"
     ]
-  }
+  },
+  "entrypoint": "map/index.html",
+  "shell": "map/webcomponent/map.html"
 }
